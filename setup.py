@@ -26,7 +26,7 @@ setup(
         # package in that repo you want to install. A repo may have many or no
         # packages
         'git+ssh://git@github.com'
-        '/davidsandberg/facenet#egg=facenet'
+        '/madhawav/YOLO3-4-Py#egg=YOLO3-4-Py'
     ],
     setup_requires=[
         'setuptools_scm',  # for git-based versioning
