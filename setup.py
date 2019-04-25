@@ -11,6 +11,8 @@ setup(
     url='https://github.com/mathieutuli/face-recognizer',
     python_requires='~=3.7',
     install_requires=[
+        'tensorflow-gpu',
+        'numpy',
     ],
     extras_require={
         'docs': [
