@@ -1,4 +1,3 @@
-from functools import partial
 import importlib.resources
 import multiprocessing
 import logging
@@ -13,10 +12,9 @@ import raven
 import yaml
 
 from .object_identifier import ObjectIdentifier
-from .feed_pipeline import GenericTracker, OverlookFeed, CashNorthFeed, \
-        IdentifierFeed
+from .feed_pipeline import FaceRecognizerFeed
 from .process_bus import ProcessBus
-from .components import UnlimitedQueue, MonoQueue
+from .components import UnlimitedQueue  # , MonoQueue
 from .drawing import Drawer
 
 
@@ -100,10 +98,7 @@ class System:
         # self.feed_processes is a dictionary with details about all the feeds:
         # {feed_name1:{object: <Pipeline>, process: <multiprocessing.Process>}}
         feed_pipeline_types = {
-            'GenericTracker': GenericTracker,
-            'OverlookFeed': OverlookFeed,
-            'CashNorthFeed': CashNorthFeed,
-            'IdentifierFeed': IdentifierFeed,
+            'FaceRecognizerFeed': FaceRecognizerFeed,
         }
         for feed_name, settings in feed_processes_settings.items():
             feed_pipeline_type = settings['feed_pipeline_type']

@@ -10,13 +10,11 @@ import os
 import prctl
 # import cv2
 
-from .open_cash_lines import OpenCashLines
 from .video_manager import VideoManager
 from .object_identifier import ObjectIdentifier
-from .time_in_cash import TimeInCash
+from .face_recognizer import FaceRecognizer
 from .process_bus import ProcessBus
 from .data_sink import DataSink
-from .trackers import Tracker
 from .drawing import Drawer
 
 
@@ -115,7 +113,7 @@ class FeedPipeline:
         raise NotImplementedError("Implement feed_specific_execution")
 
 
-class IdentifierFeed(FeedPipeline):
+class FaceRecognizerFeed(FeedPipeline):
     def __init__(self,
                  name: str,
                  feed_type: str,
@@ -143,12 +141,17 @@ class IdentifierFeed(FeedPipeline):
             list isn't appended to in the __init__() of a FeedPipeline, then
             the data will be lost.
         '''
-        self.barrier = threading.Barrier(1)
+        self.barrier = threading.Barrier(2)
+        face_recognizer = FaceRecognizer(
+                name=self.features['face_recognizer']['name'],
+                process_bus=self.process_bus,
+                barrier=self.barrier,
+                settings=self.features['face_recognizer']['settings'])
         self.object_identifier.register_customers(
                 in_q_owner=str(self.object_identifier),
                 in_q_name=str(self),
-                out_q_owner=str(self.object_identifier),
-                out_q_name=f'{str(self)}_out_q')
+                out_q_owner=str(face_recognizer),
+                out_q_name=f'in_q')
         # NOTE: These are necessary for process management related reasons.
         #   Meaning...becuase video_manager and data_sink are spawned in
         #   the main FeedPipeline.run for multiprocessing reasons, we need
@@ -157,8 +160,8 @@ class IdentifierFeed(FeedPipeline):
         #   in feed_specific_execution
         self.register_with_video_manager.append((str(self.object_identifier),
                                                  str(self)))
-        self.register_with_data_sink.append((str(self.object_identifier),
-                                            f'{str(self)}_out_q'))
+        self.register_with_data_sink.append((str(face_recognizer), 'out_q'))
+        self.thread_objects.append(face_recognizer)
 
     def feed_specific_execution(self) -> None:
         '''
@@ -176,5 +179,4 @@ class IdentifierFeed(FeedPipeline):
                              name=str(thread_object)).start()
 
 
-__all__ = 'FeedPipeline', 'GenericTracker', 'OverlookFeed', 'CashNorthFeed', \
-        'IdentifierFeed',
+__all__ = 'FaceRecognizerFeed',
