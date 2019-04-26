@@ -17,7 +17,9 @@ args = parser.parse_args()
 
 
 class YOLOFace():
-    def __init__(self, cam, to_track: list, save_video=False, detect_face=False, show_scores=True, show_all=False, model_filename=None):
+    def __init__(self, cam, to_track: list, save_video=False,
+                 detect_face=False, show_scores=True, show_all=False,
+                 model_filename=None):
         '''
         @param cam: int | camera index
         @param to_track: list | people names seperated by '_'
