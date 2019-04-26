@@ -1,3 +1,6 @@
+# PROJECT SPECIFIC
+*yolov3.weights
+*yolo.h5
 # Stock Python things
 /venv
 *.egg-info
