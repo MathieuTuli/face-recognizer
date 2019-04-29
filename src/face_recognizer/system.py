@@ -80,8 +80,6 @@ class System:
                                                queue_name=f"{feed_name}",
                                                queue=UnlimitedQueue())
 
-        self.first_call = multiprocessing.Event()
-
         coco_classes_path = pathlib.Path(coco_classes_path)
         with coco_classes_path.open() as coco_classes_file:
             class_names = coco_classes_file.readlines()

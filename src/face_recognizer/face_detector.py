@@ -1,16 +1,17 @@
+# from tensorflow.python.platform import gfile
+from skimage.transform import resize
+from PIL import Image
+
 import tensorflow as tf
 import numpy as np
 import facenet
 
-from PIL import Image
-from tensorflow.python.platform import gfile
-from skimage.transform import resize
-
-from .facenet import prewhiten, crop, flip
+from .facenet import prewhiten
 
 
 class FaceDetector:
-    def __init__(self, model_path, gpu_memory_fraction=0.25, visible_device_list='0'):
+    def __init__(self, model_path, gpu_frac=0.25,
+                 visible_device_list='0'):
         """
         Arguments:
             model_path: a string, path to a pb file.
@@ -34,10 +35,11 @@ class FaceDetector:
         ]
 
         gpu_options = tf.GPUOptions(
-            per_process_gpu_memory_fraction=gpu_memory_fraction,
+            per_process_gpu_memory_fraction=gpu_frac,
             visible_device_list=visible_device_list
         )
-        config_proto = tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False)
+        config_proto = tf.ConfigProto(gpu_options=gpu_options,
+                                      log_device_placement=False)
         self.sess = tf.Session(graph=graph, config=config_proto)
 
     def detect(self, image, score_threshold=0.5):
@@ -75,13 +77,16 @@ class FaceDetector:
         for box in boxes:
             bounding_boxes.append([box[1], box[0], box[3], box[2]])
 
-        images = np.zeros((len(bounding_boxes), self.image_size, self.image_size, 3))
+        images = np.zeros((len(bounding_boxes),
+                          self.image_size, self.image_size, 3))
         for i, box in enumerate(bounding_boxes):
-            images[i, :, :, :] = self.prepare_images(pil_image, box, self.image_size)
+            images[i, :, :, :] = self.prepare_images(pil_image,
+                                                     box, self.image_size)
 
         return images, bounding_boxes
 
-    def prepare_images(self, image, box, image_size, do_random_crop=False, do_random_flip=False, do_prewhiten=True):
+    def prepare_images(self, image, box, image_size, do_random_crop=False,
+                       do_random_flip=False, do_prewhiten=True):
         img = np.array(image.crop(box=(box[0], box[1], box[2], box[3])))
         img = resize(img, (image_size, image_size))
         if img.ndim == 2:

@@ -1,0 +1,46 @@
+Features: &Features
+  feature_object_identifier_name: &feature_object_identifier_name "object_identifier"
+  default_object_identifier: &default_object_identifier
+    *feature_object_identifier_name:
+      name: *feature_object_identifier_name
+      classes_fname: "model_data/coco_classes.txt"
+      threshold: 0.4
+      gpu_face: 0.8
+      model: "pydarknet"
+      class_filters: ["person"]
+      feature_on: Yes
+
+  feature_face_recognizer_name: &feature_face_recognizer_name "face_recognizer"
+  default_face_recognizer: &default_face_recognizer
+    name: *feature_face_recognizer_name
+    draw: Yes
+    show_all_labels: No
+    face_id_threshold: 0.65
+    face_id_gpu_frac: 0.1
+    face_detector_gpu_frac: 0.25
+
+DataSink: &DataSink
+  base_output_path: &base_output_path "~/.anvil/object-tracking/"
+  s3sync: &s3sync
+    output_path: *base_output_path
+    error_files_dir: "~/.anvil/object-tracking/sync-service/error-files"
+    spool_path: "~/.anvil/object-tracking/spool"
+    backup_path: "~/.anvil/object-tracking/backup"
+    s3_bucket_name: "canadian-tire-data"
+  metadata_saver: &metadata_saver
+    dbname: "dbname"
+    user: "apilona"
+
+<<: *default_object_identifier
+Feeds: &Feeds
+  face_recognizer_feed:
+    feed_pipeline_type: "FaceRecognizerFeed"
+    feed_type: "video"
+    source: "sample_videos/cash_n.avi"
+    save_raw_video: Yes
+    save_proc_video: Yes
+    save_metadata: Yes
+    features:
+      *feature_face_recognizer_name:
+        name: "face_recognizer_demo"
+        depends_on: *feature_object_identifier_name

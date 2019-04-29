@@ -12,7 +12,7 @@ from .components import Frame, ObjectIdentifierObject, FaceRecognizerOutput, \
     Face, FaceLabel
 from .features import Feature
 from .drawing import Drawer
-from .faceid import FaceID
+from .face_id import FaceID
 # from .face_id import FaceID
 
 FACE_DETECTOR_MODEL_FILE = importlib.resources.path(
@@ -45,19 +45,17 @@ class FaceRecognizer(Feature):
                          process_bus=process_bus,
                          draw=settings['draw'])
         self.name = name
-        self.model = None
         self.labels = None
         self.settings = settings
-        self.face_detector = FaceDetector(FACE_DETECTOR_MODEL_FILE.gen)
-        self.label_type = settings['label_type']
+        self.face_detector = FaceDetector(
+                FACE_DETECTOR_MODEL_FILE.gen,
+                gpu_frac=settings['face_detector_gpu_frac'])
+        self.show_all_labels = settings['show_all_labels']
         self.face_id = FaceID([1, 1],
                               DEFAULT_COCO_CLASSES,
-                              None,
-                              None,
-                              None,
                               # this is a string with names seperated by '_'
                               {'target': FACE_RECOGNIZER_WHO,
-                               'gpu_frac': 0.1,
+                               'gpu_frac': settings['face_id_gpu_frac'],
                                'model_name': DEFAULT_FACE_ID_MODEL_FILE.gen})
 
     def run(self,) -> None:
@@ -87,8 +85,8 @@ class FaceRecognizer(Feature):
     def process_frame(self,
                       frame: Frame,) -> FaceRecognizerOutput:
         faces = self.recognize_faces(frame.frame)
-        overlay = self.drawer.draw_faces(
-                ) if self.draw else None
+        overlay = self.drawer.draw_faces(frame.frame * 0,
+                                         faces) if self.draw else None
         return FaceRecognizerOutput(
                 faces=faces,
                 frame=frame,
@@ -99,3 +97,11 @@ class FaceRecognizer(Feature):
                         frame: np.ndarray,) -> List[Face]:
         # cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         faces, boxes = self.face_detector.detect(frame)
+        if faces.any():
+            results = self.face_id.identify(
+                    faces, boxes,
+                    threshold=self.face_id_threshold,
+                    show_all_labels=self.show_all_labels)
+            # if not isinstance(faces, List[Face]):
+            #     raise ValueError(f"{faces} is of incorrect type")
+        return results
