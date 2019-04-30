@@ -9,7 +9,6 @@ import prctl
 import cv2
 import os
 
-from .sync_service.bin.S3Sync import S3Sync
 from .process_bus import ProcessBus
 from .components import Sink, Frame, MonoQueue, UnlimitedQueue
 
@@ -31,7 +30,7 @@ class VideoWriter:
         self.video_writer: cv2.VideoWriter = None
         # TODO ugly, but sync-service needs to be adapted a bit to change
         self.output_path = os.path.join(settings['output_path'], 'output')
-        self.s3sync = S3Sync(settings)
+        # self.s3sync = S3Sync(settings)
 
     def config_file_paths(self,
                           timestamp: datetime,) -> None:
@@ -53,8 +52,8 @@ class VideoWriter:
         file_path = os.path.join(
                 dir_path,
                 f"{self.name}_{current_minute_second}.avi")
-        if self.current_file_path is not None:
-            self.s3sync.notify(self.current_file_path)
+        # if self.current_file_path is not None:
+        #     self.s3sync.notify(self.current_file_path)
         self.current_file_path = file_path
 
     def confirm_writer(self,

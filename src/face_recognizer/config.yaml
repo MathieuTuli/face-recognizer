@@ -8,7 +8,7 @@ Features: &Features
       gpu_face: 0.8
       model: "pydarknet"
       class_filters: ["person"]
-      feature_on: Yes
+      feature_on: No
 
   feature_face_recognizer_name: &feature_face_recognizer_name "face_recognizer"
   default_face_recognizer: &default_face_recognizer
@@ -43,4 +43,14 @@ Feeds: &Feeds
     features:
       *feature_face_recognizer_name:
         name: "face_recognizer_demo"
-        depends_on: *feature_object_identifier_name
+        depends_on: "none"
+        settings:
+          draw: Yes
+          show_all_labels: No
+          face_id_threshold: 0.65
+          face_id_gpu_frac: 0.1
+          face_detector_gpu_frac: 0.25
+
+    data_sink:
+      <<: *s3sync
+      <<: *metadata_saver

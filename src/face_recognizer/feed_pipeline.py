@@ -12,7 +12,7 @@ import prctl
 
 from .video_manager import VideoManager
 from .object_identifier import ObjectIdentifier
-from .face_recognizer import FaceRecognizer
+from .face_recognizer_feature import FaceRecognizer
 from .process_bus import ProcessBus
 from .data_sink import DataSink
 from .drawing import Drawer
@@ -146,20 +146,21 @@ class FaceRecognizerFeed(FeedPipeline):
                 name=self.features['face_recognizer']['name'],
                 process_bus=self.process_bus,
                 barrier=self.barrier,
+                drawer=self.drawer,
                 settings=self.features['face_recognizer']['settings'])
-        self.object_identifier.register_customers(
-                in_q_owner=str(self.object_identifier),
-                in_q_name=str(self),
-                out_q_owner=str(face_recognizer),
-                out_q_name=f'in_q')
+        # self.object_identifier.register_customers(
+        #         in_q_owner=str(self.object_identifier),
+        #         in_q_name=str(self),
+        #         out_q_owner=str(face_recognizer),
+        #         out_q_name=f'in_q')
         # NOTE: These are necessary for process management related reasons.
         #   Meaning...becuase video_manager and data_sink are spawned in
         #   the main FeedPipeline.run for multiprocessing reasons, we need
         #   to do the registration within that function, which is why we need
         #   to save a reference to who needs to be registered and then use that
         #   in feed_specific_execution
-        self.register_with_video_manager.append((str(self.object_identifier),
-                                                 str(self)))
+        self.register_with_video_manager.append((str(face_recognizer),
+                                                 'in_q'))
         self.register_with_data_sink.append((str(face_recognizer), 'out_q'))
         self.thread_objects.append(face_recognizer)
 

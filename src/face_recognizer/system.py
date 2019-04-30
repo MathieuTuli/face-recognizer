@@ -33,10 +33,10 @@ else:
         systemd.daemon.notify('READY=1')
 
 sentry = raven.Client()  # installs sys.excepthook too
-DEFAULT_CONFIG = importlib.resources.path('imrsv.object_tracking',
+DEFAULT_CONFIG = importlib.resources.path('face_recognizer',
                                           'config.yaml')
 DEFAULT_COCO_CLASSES = importlib.resources.path(
-        'imrsv.object_tracking.model_data',
+        'face_recognizer.model_data',
         'coco_classes.txt')
 
 
@@ -86,13 +86,16 @@ class System:
 
         class_names = [c.strip() for c in class_names]
         drawer = Drawer(class_names)
-
-        object_identifier = ObjectIdentifier(process_bus=process_bus,
-                                             class_names=class_names,
-                                             settings=obj_id_settings,)
-        self.obj_id_process = multiprocessing.Process(
-                target=object_identifier.run,
-                name=obj_id_settings['name'])
+        if obj_id_settings['feature_on']:
+            object_identifier = ObjectIdentifier(process_bus=process_bus,
+                                                 class_names=class_names,
+                                                 settings=obj_id_settings,)
+            self.obj_id_process = multiprocessing.Process(
+                    target=object_identifier.run,
+                    name=obj_id_settings['name'])
+        else:
+            object_identifier = None
+            self.obj_id_process = None
         # self.feed_processes is a dictionary with details about all the feeds:
         # {feed_name1:{object: <Pipeline>, process: <multiprocessing.Process>}}
         feed_pipeline_types = {
@@ -125,9 +128,10 @@ class System:
         """
         prctl.set_name("Main System Process")
         processes = list()
-        self.obj_id_process.start()
-        processes.append(self.obj_id_process.sentinel)
-        logging.info(f"YOLO Sentinel: {self.obj_id_process.sentinel}")
+        if self.obj_id_process is not None:
+            self.obj_id_process.start()
+            processes.append(self.obj_id_process.sentinel)
+            logging.info(f"YOLO Sentinel: {self.obj_id_process.sentinel}")
         for feed_name, contents in self.feed_processes.items():
             contents['process'].start()
             processes.append(contents['process'].sentinel)

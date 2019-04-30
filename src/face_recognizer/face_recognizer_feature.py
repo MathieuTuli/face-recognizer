@@ -8,8 +8,7 @@ import prctl
 # from .facedetect_v2 import FaceDetector
 from .face_detector import FaceDetector
 from .process_bus import ProcessBus
-from .components import Frame, ObjectIdentifierObject, FaceRecognizerOutput, \
-    Face, FaceLabel
+from .components import Frame, FaceRecognizerOutput, Face
 from .features import Feature
 from .drawing import Drawer
 from .face_id import FaceID
@@ -26,7 +25,7 @@ DEFAULT_COCO_CLASSES = importlib.resources.read_text(
         'coco_classes.txt').split()
 DEFAULT_FACE_ID_MODEL_FILE = importlib.resources.path(
         'face_recognizer.model_data',
-        'face_id.pb')
+        'trained.pkl')
 
 
 class FaceRecognizer(Feature):
@@ -105,3 +104,6 @@ class FaceRecognizer(Feature):
             # if not isinstance(faces, List[Face]):
             #     raise ValueError(f"{faces} is of incorrect type")
         return results
+
+
+__all__ = 'FaceRecognizer',

@@ -96,3 +96,6 @@ class FaceDetector:
         img = facenet.crop(img, do_random_crop, image_size)
         img = facenet.flip(img, do_random_flip)
         return img
+
+
+__all__ = 'FaceDetector'

@@ -2,7 +2,7 @@ classes= 80
 train  = /home/pjreddie/data/coco/trainvalno5k.txt
 valid  = coco_testdev
 #valid = data/coco_val_5k.list
-names = /home/mat/github/object-tracking/src/imrsv/object_tracking/model_data/coco.names
+names = /home/mat/github/persona/face-recognizer/src/face_recognizer/model_data/coco.names
 backup = /home/pjreddie/backup/
 eval=coco
 

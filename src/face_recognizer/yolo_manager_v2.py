@@ -115,13 +115,13 @@ class YOLOManager(SharedTransceiver):
             self.net = YOLO()
         elif self.yolo_version == 'pydarknet':
             cfg_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'yolov3.cfg').gen))
             weights_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'yolov3.weights').gen))
             coco_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'coco.data').gen))
             self.net = Detector(bytes(cfg_file, encoding="utf-8"),
                                 bytes(weights_file, encoding="utf-8"),

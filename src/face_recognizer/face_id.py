@@ -14,7 +14,7 @@ import facenet
 
 FACE_ID_PB_FILE = importlib.resources.path(
         'face_recognizer.model_data',
-        'face_id.pb')
+        'classifier.pb')
 
 
 class FaceID:
@@ -135,7 +135,7 @@ class FaceID:
                 #     os.path.join(model_exp, meta_file), input_map=input_map)
                 # self.saver.restore(self.graph, os.path.join(model_exp,
                 #                                             ckpt_file))
-            with open(f'facenet/faceid_model/{model_name}.pkl', 'rb') \
+            with open(model_name, 'rb') \
                     as infile:
                 (self.model, self.class_names) = pickle.load(infile)
             print("Faceid class names: {}".format(self.class_names))
@@ -159,3 +159,6 @@ class FaceID:
         img = facenet.crop(img, do_random_crop, image_size)
         img = facenet.flip(img, do_random_flip)
         return img
+
+
+__all__ = 'FaceID'

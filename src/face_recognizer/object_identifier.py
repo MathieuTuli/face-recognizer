@@ -9,7 +9,7 @@ from PIL import Image as PILImage
 from .process_bus import ProcessBus
 from .components import Frame, SharedTransceiver, ObjectIdentifierObject, \
         ObjectIdentifierOutput, BBox
-from .yolo import YOLO
+# from .yolo import YOLO
 # from pydarknet import Detector
 # from pydarknet import Image as DarkImage
 import prctl
@@ -115,13 +115,13 @@ class ObjectIdentifier(SharedTransceiver):
             self.net = YOLO()
         elif self.model == 'pydarknet':
             cfg_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'yolov3.cfg').gen))
             weights_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'yolov3.weights').gen))
             coco_file = str(next(importlib.resources.path(
-                    'imrsv.object_tracking.model_data',
+                    'face_recognizer.model_data',
                     'coco.data').gen))
             self.net = Detector(bytes(cfg_file, encoding="utf-8"),
                                 bytes(weights_file, encoding="utf-8"),
