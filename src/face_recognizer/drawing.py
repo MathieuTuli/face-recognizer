@@ -81,10 +81,10 @@ class Drawer:
                 else:
                     if id_size > max_size:
                         max_size = id_size[0]
-            score_size = cv2.getTextSize(str(score),
-                                         fontFace=font_type,
-                                         fontScale=score_font_size,
-                                         thickness=thickness)
+            # score_size = cv2.getTextSize(str(score),
+            #                              fontFace=font_type,
+            #                              fontScale=score_font_size,
+            #                              thickness=thickness)
             padding_text_left = padding
             # ratio = (x2-x1) / class_size[0][0]
             ratio = (x2 - x1) / (max_size[0][0] + padding_text_left)
@@ -93,9 +93,11 @@ class Drawer:
                 background_extender = (max_size[0][0] + padding_text_left) -\
                         (x2 - x1) + padding
 
-            top_text_background = y1 - (int(max_size[0][1] +
-                                            score_size[0][1]) *
-                                        (len(face_labels))) - (2 * padding)
+            # top_text_background = y1 - (int(max_size[0][1] +
+            #                                 score_size[0][1]) *
+            #                             (len(face_labels))) - (2 * padding)
+            top_text_background = y1 - (int(max_size[0][1]) *
+                                        (len(face_labels)))
             box_top = top_text_background - 2 * padding
             frame_height_offset = 0
             if box_top < 0:
@@ -122,18 +124,18 @@ class Drawer:
                             color=(255, 255, 255),
                             thickness=thickness,
                             lineType=line_type)
-                cv2.putText(img=frame,
-                            text=str(score),
-                            org=(int(x1 + padding_text_left),
-                                 int(top_text_background + padding +
-                                     frame_height_offset +
-                                     max_size[0][1] + padding +
-                                     (i * max_size[0][1]))),
-                            fontFace=font_type,
-                            fontScale=font_size,
-                            color=(255, 255, 255),
-                            thickness=thickness,
-                            lineType=line_type)
+                # cv2.putText(img=frame,
+                #             text=str(score),
+                #             org=(int(x1 + padding_text_left),
+                #                  int(top_text_background + padding +
+                #                      frame_height_offset +
+                #                      max_size[0][1] + padding +
+                #                      (i * max_size[0][1]))),
+                #             fontFace=font_type,
+                #             fontScale=font_size,
+                #             color=(255, 255, 255),
+                #             thickness=thickness,
+                #             lineType=line_type)
         return frame
 
 
