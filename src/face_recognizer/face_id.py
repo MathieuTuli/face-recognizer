@@ -12,9 +12,9 @@ from .components import Face, FaceLabel, BBox
 from .facenet import prewhiten
 import facenet
 
-FACE_ID_PB_FILE = importlib.resources.path(
+FACE_ID_PB_FILE = next(importlib.resources.path(
         'face_recognizer.model_data',
-        'classifier.pb')
+        'classifier.pb').gen)
 
 
 class FaceID:
@@ -48,7 +48,7 @@ class FaceID:
         for name in names:
             if name.find("not") != -1:
                 continue
-            self.faceid_class.append('{}'.format(name))
+            self.faceid_class.append('{}'.format(name.strip()))
 
         config = tf.ConfigProto(
             device_count={'GPU': 0}
@@ -61,7 +61,7 @@ class FaceID:
         self.embedding_size = None
         self.image_size = 160
 
-        self.init_model(FACE_ID_PB_FILE.gen, model_name)
+        self.init_model(str(FACE_ID_PB_FILE), model_name)
 
         config = tf.ConfigProto(
             gpu_options=tf.GPUOptions(
@@ -87,6 +87,7 @@ class FaceID:
                 np.arange(len(best_class_indices)), best_class_indices]
 
         results = list()
+        # don't use this just yet (or really ever)
         if show_all_labels:
             predictions = predictions.tolist()
             pass

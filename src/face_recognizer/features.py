@@ -29,19 +29,19 @@ class Feature(Transceiver):
         """
         Must be overwritten
         """
-        raise NotImplementedError("Must overwrite")
+        raise NotImplementedError("Must overwrite run")
 
     @abstractmethod
     def process_frame(self,) -> Any:
         """
         Must be overwritten
         """
-        raise NotImplementedError("Must overwrite")
+        raise NotImplementedError("Must overwrite process_frame")
 
     def __str__(self) -> str:
         """Object Identifier
         """
-        raise NotImplementedError("Overwrite")
+        raise NotImplementedError("Must overwrite __str__")
 
     def register_out(self,
                      q_owner: str,

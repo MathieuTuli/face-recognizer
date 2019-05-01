@@ -3,16 +3,11 @@
 from datetime import datetime
 from typing import Union, Tuple, List
 from signal import signal, SIGINT, SIG_DFL
-import subprocess
 import threading
 import prctl
-import math
 import os
 
-import psycopg2
-import numpy as np
 import cv2
-import av
 
 from .process_bus import ProcessBus
 from .components import Source, Frame, MonoQueue, UnlimitedQueue

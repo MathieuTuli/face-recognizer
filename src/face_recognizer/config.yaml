@@ -35,8 +35,8 @@ DataSink: &DataSink
 Feeds: &Feeds
   face_recognizer_feed:
     feed_pipeline_type: "FaceRecognizerFeed"
-    feed_type: "video"
-    source: "sample_videos/cash_n.avi"
+    feed_type: "webcam"
+    source: 0
     save_raw_video: Yes
     save_proc_video: Yes
     save_metadata: Yes
