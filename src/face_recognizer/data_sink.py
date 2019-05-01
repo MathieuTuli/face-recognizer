@@ -114,6 +114,7 @@ class ProcVideoWriter(VideoWriter):
                              name=name,
                              frame_type='proc',
                              settings=settings)
+        self.move_window = True
 
     def write(self,
               frame: Frame,
@@ -130,7 +131,10 @@ class ProcVideoWriter(VideoWriter):
             proc_frame = proc_frame * mask
             proc_frame = np.add(proc_frame, overlay)
         self.confirm_writer(proc_frame, timestamp)
-        cv2.imshow("", proc_frame)
+        cv2.imshow("image", proc_frame)
+        if self.move_window:
+            cv2.moveWindow("image", 20, 20)
+            self.move_window = False
         cv2.waitKey(1)
         self.video_writer.write(proc_frame)
 
