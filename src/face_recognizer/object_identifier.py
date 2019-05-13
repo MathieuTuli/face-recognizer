@@ -9,6 +9,7 @@ from PIL import Image as PILImage
 from .process_bus import ProcessBus
 from .components import Frame, SharedTransceiver, ObjectIdentifierObject, \
         ObjectIdentifierOutput, BBox
+from .drawing import Drawer
 # from .yolo import YOLO
 # from pydarknet import Detector
 # from pydarknet import Image as DarkImage
@@ -26,6 +27,7 @@ class ObjectIdentifier(SharedTransceiver):
     '''
     def __init__(self,
                  process_bus: ProcessBus,
+                 drawer: Drawer,
                  class_names: List[str],
                  settings: Dict[str, Any],):
         '''Constructor
@@ -43,6 +45,7 @@ class ObjectIdentifier(SharedTransceiver):
         # NOTE the network must be intialized in self.run() for multiprocessing
         # reasons
         self.net: Any = None
+        self.draw_boxes = settings['draw_boxes']
 
     def __str__(self) -> str:
         """Object Identifier"""
@@ -65,9 +68,7 @@ class ObjectIdentifier(SharedTransceiver):
         List[Tuple[class_names, class_score, BBox]]
         '''
         frame = request_frame.frame
-        results = ObjectIdentifierOutput(
-                objects=list(),
-                frame=request_frame)
+        objects = list()
         if self.model == 'keras':
             pil_frame = PILImage.fromarray(frame)
             original_frame, r_image, \
@@ -84,7 +85,7 @@ class ObjectIdentifier(SharedTransceiver):
                 class_name = self.class_names[classes[i]]
                 if class_name not in self.class_filters:
                     continue
-                results.objects.append((ObjectIdentifierObject(
+                objects.append((ObjectIdentifierObject(
                     class_name=self.class_names[classes[i]],
                     score=scores[i],
                     bbox=BBox(left=int(l),
@@ -95,19 +96,24 @@ class ObjectIdentifier(SharedTransceiver):
             dark_frame = DarkImage(frame)
             results = self.net.detect(dark_frame, self.threshold)
             del dark_frame
-            results = ObjectIdentifierOutput(
-                    objects=[ObjectIdentifierObject(
-                        class_name=class_name.decode("utf-8"),
-                        score=score,
-                        bbox=BBox(
-                            left=int(x - w/2),
-                            top=int(y - h/2),
-                            right=int(x + w/2),
-                            bottom=int(y + h/2))) for
-                            class_name, score, (x, y, w, h) in results
-                            if class_name.decode("utf-8") in
-                            self.class_filters],
-                    frame=request_frame)
+            objects = [ObjectIdentifierObject(
+                class_name=class_name.decode("utf-8"),
+                score=score,
+                bbox=BBox(
+                    left=int(x - w/2),
+                    top=int(y - h/2),
+                    right=int(x + w/2),
+                    bottom=int(y + h/2))) for
+                    class_name, score, (x, y, w, h) in results
+                    if class_name.decode("utf-8") in
+                    self.class_filters]
+        results = ObjectIdentifierOutput(
+                objects=objects,
+                frame=request_frame,
+                overlay=self.drawer.draw_bboxes(frame,
+                                                objects,
+                                                overlay=True)
+                if self.draw_boxes else None)
         return results
 
     def load_model(self) -> None:
@@ -160,7 +166,8 @@ class ObjectIdentifier(SharedTransceiver):
                     # Signal to Tracker that a 'None' frame was received
                     out_queue.put(ObjectIdentifierOutput(
                         objects=None,
-                        frame=None))
+                        frame=None,
+                        overlay=None))
                     continue
                 results = self.get_results(request_frame)
                 out_queue.put(results)

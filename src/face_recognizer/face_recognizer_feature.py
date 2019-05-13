@@ -93,8 +93,9 @@ class FaceRecognizer(Feature):
     def process_frame(self,
                       frame: Frame,) -> FaceRecognizerOutput:
         faces = self.recognize_faces(frame.frame)
-        overlay = self.drawer.draw_faces(frame.frame * 0,
-                                         faces) if self.draw else None
+        overlay = self.drawer.draw_faces(frame.frame,
+                                         faces,
+                                         overlay=True) if self.draw else None
         return FaceRecognizerOutput(
                 faces=faces,
                 frame=frame,
