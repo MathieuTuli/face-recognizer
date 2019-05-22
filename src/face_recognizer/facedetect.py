@@ -10,9 +10,10 @@ import math
 import detect_face
 import time
 
-from facenet import prewhiten, crop, flip
 from tensorflow.python.platform import gfile
 from skimage.transform import resize
+
+from .facenet import prewhiten, crop, flip
 
 class FaceDetect(multiprocessing.Process):
     def __init__(self):

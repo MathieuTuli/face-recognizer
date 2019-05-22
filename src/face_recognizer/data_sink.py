@@ -172,6 +172,7 @@ class DataSink(Sink):
             overlays = list()
             feature_results = list()
             frame = None
+            time = datetime.now()
             for q in self.input_qs:
                 feature_result = q.get()
                 # signalled that nothing came through so ignore it
@@ -192,6 +193,4 @@ class DataSink(Sink):
                 continue
             self.raw_video_writer.write(frame)
             self.proc_video_writer.write(frame, overlays)
-            print(
-                "time: " +
-                f"{(datetime.now() - self.start_time).total_seconds()}")
+            print(f"FPS {(1 / (datetime.now() - time).total_seconds())}")
