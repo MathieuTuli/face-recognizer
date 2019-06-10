@@ -191,6 +191,13 @@ class DataSink(Sink):
                 feature_results.append(feature_result)
             if frame is None:
                 continue
-            self.raw_video_writer.write(frame)
-            self.proc_video_writer.write(frame, overlays)
+            proc_frame = frame.frame
+            for overlay in overlays:
+                mask = np.equal(overlay, 0).astype('uint8')
+                proc_frame = proc_frame * mask
+                proc_frame = np.add(proc_frame, overlay)
+            cv2.imshow("image", proc_frame)
+            cv2.waitKey(1)
+            # self.proc_video_writer.write(frame, overlays)
+            # self.raw_video_writer.write(frame)
             print(f"FPS {(1 / (datetime.now() - time).total_seconds())}")

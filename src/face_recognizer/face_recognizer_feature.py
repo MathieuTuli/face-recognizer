@@ -105,6 +105,7 @@ class FaceRecognizer(Feature):
     def recognize_faces(self,
                         frame: np.ndarray,) -> List[Face]:
         # cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        return list()
         faces, boxes = self.face_detector.detect(frame)
         results = list()
         if faces.any():
