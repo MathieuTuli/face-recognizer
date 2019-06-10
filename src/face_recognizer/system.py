@@ -87,6 +87,7 @@ class System:
         class_names = [c.strip() for c in class_names]
         drawer = Drawer(class_names)
         if obj_id_settings['feature_on']:
+            print("STARTING OBJECT IDENTIFIER")
             object_identifier = ObjectIdentifier(process_bus=process_bus,
                                                  class_names=class_names,
                                                  settings=obj_id_settings,)
@@ -126,7 +127,6 @@ class System:
         """
         run system
         """
-        prctl.set_name("Main System Process")
         processes = list()
         if self.obj_id_process is not None:
             self.obj_id_process.start()
@@ -149,7 +149,6 @@ __all__ = 'System',
 if __name__ == '__main__':
     config_posixpath = next(DEFAULT_CONFIG.gen)
     coco_classes_posixpath = next(DEFAULT_COCO_CLASSES.gen)
-
     system = System(config_path=config_posixpath,
                     coco_classes_path=coco_classes_posixpath)
     notify_startup_done()

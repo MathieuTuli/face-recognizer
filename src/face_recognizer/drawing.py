@@ -3,9 +3,9 @@ Drawer help
 """
 
 from typing import List, Tuple
-import cv2
 import colorsys
 import numpy as np
+import cv2
 
 from .components import Face, ObjectIdentifierObject
 
@@ -31,7 +31,7 @@ class Drawer:
         self.colors[class_names.index("person")] = (60, 4, 204)
         self.cash_on_color = (0, 255, 0)
         self.cash_off_color = (0, 0, 255)
-        self.face_colour = (255, 0, 0)
+        self.face_colour = (255, 255, 255)
 
     def __str__(self) -> str:
         '''
@@ -73,6 +73,7 @@ class Drawer:
                 id_ = face_label.label
                 score = face_label.score
                 score = round(score, 2)
+                id_ += f" {str(score)}%"
                 id_size = cv2.getTextSize(id_.lower(),
                                           fontFace=font_type,
                                           fontScale=font_size,
@@ -113,6 +114,7 @@ class Drawer:
             for i, face_label in enumerate(face_labels):
                 id_ = face_label.label
                 score = round(face_label.score, 2)
+                id_ += f" {str(score)}%"
                 # text
                 cv2.putText(img=frame,
                             text=id_,
@@ -122,7 +124,7 @@ class Drawer:
                                      (i * max_size[0][1]))),
                             fontFace=font_type,
                             fontScale=font_size,
-                            color=(255, 255, 255),
+                            color=(0, 0, 0),
                             thickness=thickness,
                             lineType=line_type)
                 # cv2.putText(img=frame,

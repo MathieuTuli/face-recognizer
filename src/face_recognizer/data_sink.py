@@ -2,11 +2,11 @@ from datetime import datetime
 from signal import signal, SIGINT, SIG_DFL
 from typing import List, Union, Dict, Any
 import logging
+import cv2
 
 # import psycopg2
 import numpy as np
 import prctl
-import cv2
 import os
 
 from .process_bus import ProcessBus
@@ -65,12 +65,12 @@ class VideoWriter:
         it if so, otherwise do nothing
         '''
         fps = max(3, 1 / (datetime.now() - timestamp).total_seconds())
+        fps = 10
         logging.debug(f"FPS: {fps}")
         current_file_time = timestamp.strftime(u"%Y-%m-%d-%H")
         # TODO: An initial file is created containing only the first frame,
         #   need to fix the creation of this useless file
-        if abs(fps - self.current_fps) > self.fps_sensitivity or \
-                self.video_writer is None or \
+        if self.video_writer is None or \
                 current_file_time != self.current_file_time:
             if self.video_writer is not None:
                 self.video_writer.release()
@@ -167,7 +167,6 @@ class DataSink(Sink):
           ready to receive a new frame. Thus, if we block-get from the
           registered queues, we will receive the proper frame/overlays
         '''
-        prctl.set_name(str(self))
         while True:
             overlays = list()
             feature_results = list()
@@ -191,6 +190,13 @@ class DataSink(Sink):
                 feature_results.append(feature_result)
             if frame is None:
                 continue
-            self.raw_video_writer.write(frame)
+            proc_frame = frame.frame
+            for overlay in overlays:
+                mask = np.equal(overlay, 0).astype('uint8')
+                proc_frame = proc_frame * mask
+                proc_frame = np.add(proc_frame, overlay)
+            cv2.imshow("image", proc_frame)
+            cv2.waitKey(1)
             self.proc_video_writer.write(frame, overlays)
-            print(f"FPS {(1 / (datetime.now() - time).total_seconds())}")
+            print(f"FPS: {(1/(datetime.now() - time).total_seconds())}")
+            print(f"TOTAL: {((datetime.now() - time).total_seconds())}")

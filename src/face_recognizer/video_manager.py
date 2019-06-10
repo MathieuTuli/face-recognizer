@@ -5,9 +5,8 @@ from typing import Union, Tuple, List
 from signal import signal, SIGINT, SIG_DFL
 import threading
 import prctl
-import os
-
 import cv2
+import os
 
 from .process_bus import ProcessBus
 from .components import Source, Frame, MonoQueue, UnlimitedQueue
@@ -42,7 +41,6 @@ class VideoManager(Source):
 
     def run(self) -> None:
         '''Frame retrieval and id-ing'''
-        prctl.set_name(str(self))
         while True:
             frame = self.source.get_frame()
             if not isinstance(frame, Frame):
