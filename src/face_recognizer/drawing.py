@@ -82,7 +82,7 @@ class Drawer:
                     max_size = id_size
                 else:
                     if id_size > max_size:
-                        max_size = id_size[0]
+                        max_size = id_size
             # score_size = cv2.getTextSize(str(score),
             #                              fontFace=font_type,
             #                              fontScale=score_font_size,
@@ -111,6 +111,7 @@ class Drawer:
                                int(y1 + frame_height_offset)),
                           color=self.face_colour,
                           thickness=-1)
+            multilabel_padding = 5 if len(face_labels) != 0 else 0
             for i, face_label in enumerate(face_labels):
                 id_ = face_label.label
                 score = round(face_label.score, 2)
@@ -121,7 +122,8 @@ class Drawer:
                             org=(int(x1 + padding_text_left),
                                  int(top_text_background + padding +
                                      frame_height_offset +
-                                     (i * max_size[0][1]))),
+                                     (i * max_size[0][1]) +
+                                     multilabel_padding * i)),
                             fontFace=font_type,
                             fontScale=font_size,
                             color=(0, 0, 0),

@@ -87,10 +87,22 @@ class FaceID:
                 np.arange(len(best_class_indices)), best_class_indices]
 
         results = list()
-        # don't use this just yet (or really ever)
+
         if show_all_labels:
             predictions = predictions.tolist()
-            pass
+            for i, face in enumerate(bounding_boxes):
+                labels = list()
+                for j, prediction in enumerate(predictions[i]):
+                    labels.append(FaceLabel(
+                        label=self.faceid_class[j],
+                        score=prediction))
+                results.append(Face(
+                    bbox=BBox(
+                        left=face[0],
+                        top=face[1],
+                        right=face[2],
+                        bottom=face[3]),
+                    labels=labels))
         else:
             for i in range(len(best_class_indices)):
                 # if best_class_probabilities[i] >= threshold:

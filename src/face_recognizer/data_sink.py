@@ -199,5 +199,4 @@ class DataSink(Sink):
             cv2.waitKey(1)
             # self.proc_video_writer.write(frame, overlays)
             # self.raw_video_writer.write(frame)
-            print(f"FPS {(1 / (datetime.now() - time).total_seconds())}")
             self.proc_video_writer.write(frame, overlays)

@@ -47,7 +47,7 @@ Feeds: &Feeds
         depends_on: "none"
         settings:
           draw: Yes
-          show_all_labels: No
+          show_all_labels: Yes
           face_id_threshold: 0.65
           face_id_gpu_frac: 0.1
           face_detector_gpu_frac: 0.25
