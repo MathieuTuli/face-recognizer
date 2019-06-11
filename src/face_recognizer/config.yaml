@@ -19,6 +19,7 @@ Features: &Features
     face_id_gpu_frac: 0.1
     face_detector_gpu_frac: 0.25
 
+
 DataSink: &DataSink
   base_output_path: &base_output_path "~/.anvil/object-tracking/"
   s3sync: &s3sync
