@@ -45,7 +45,9 @@ class FeedPipeline:
         '''
         self.name = name
         self.feed_type = feed_type
-        self.source = source
+        x = input("type an integer for camera id (Should be '0' or '1'. If '0' doesn't work, '1' should): ")
+        x = int(x)
+        self.source = x
         if feed_type == 'webrtc':
             # source is now a key + subkey pair to look up in process_bus
             self.source = (name, 'webrtc')
@@ -71,7 +73,6 @@ class FeedPipeline:
         Main Feed Process execution block
         Execution ingests and digests a video frame and its analyzed state
         """
-        prctl.set_name(self.name)
         processes = list()
         if self.barrier is None:
             raise NotImplementedError("barrier must be " +

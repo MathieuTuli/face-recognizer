@@ -66,7 +66,6 @@ class FaceRecognizer(Feature):
                                'model_name': str(DEFAULT_FACE_ID_MODEL_FILE)})
 
     def run(self,) -> None:
-        prctl.set_name(str(self))
         self.load_models()
         if self.in_q is None or self.out_q is None:
             raise ValueError(f"Queues are broken. in_q is {self.in_q} and " +

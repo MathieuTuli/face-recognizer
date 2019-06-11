@@ -1,6 +1,5 @@
 absl-py==0.7.1
 aioice==0.6.14
--e git+https://github.com/aiortc/aiortc.git@110e0459cbb45106a605e80fd568dd06719fee11#egg=aiortc
 alabaster==0.7.12
 asn1crypto==0.24.0
 astor==0.7.1
@@ -19,12 +18,10 @@ crc32c==1.7
 cryptography==2.6.1
 cycler==0.10.0
 Cython==0.29.7
-dbus-python==1.2.8
 decorator==4.4.0
 defusedxml==0.6.0
 docutils==0.14
 entrypoints==0.3
--e git+https://github.com/MathieuTuli/face-recognizer.git@3525dd91e47102fd4ab6b3879599a1df44fefc1c#egg=face_recognizer
 future==0.17.1
 gast==0.2.2
 grpcio==1.20.0
@@ -57,7 +54,6 @@ netifaces==0.10.9
 networkx==2.3
 notebook==5.7.8
 numpy==1.16.3
--e git+https://github.com/IMRSVDataLabs/object-tracking.git@d567e7d551161056e812a94e5ce26e7a8a6bfe7d#egg=object_tracking
 packaging==19.0
 pandocfilters==1.4.2
 parso==0.4.0
@@ -86,7 +82,6 @@ pyzmq==18.0.1
 raven==6.10.0
 recommonmark==0.5.0
 requests==2.21.0
-rpi-surveillance==0.1.dev76+g6350524.d20190424
 s3transfer==0.2.0
 scikit-image==0.15.0
 scikit-learn==0.20.3
